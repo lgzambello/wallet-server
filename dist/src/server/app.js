@@ -14,18 +14,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
-const baseRouter_1 = __importDefault(require("../modules/baseRouter"));
+const PlaidClient_1 = __importDefault(require("../clients/PlaidClient"));
 class Server {
+    constructor() {
+        this.plaidClient = new PlaidClient_1.default();
+    }
+    // eslint-disable-line
     server() {
         return __awaiter(this, void 0, void 0, function* () {
             const app = express_1.default();
             app.use(express_1.default.json());
             app.use(express_1.default.urlencoded({ extended: true }));
-            app.use('/api/v1', baseRouter_1.default.routes); //setting up base route
             // define a route handler for the default home page
-            app.get("/", (req, res) => {
-                res.send("Welcome to express-create application! ");
-            });
+            app.get("/link-token", (req, res) => __awaiter(this, void 0, void 0, function* () {
+                // const id = req.body;
+                const linkToken = yield this.plaidClient.getLinkToken("id");
+                console.log(linkToken);
+                console.log("hehe");
+                res.header("Access-Control-Allow-Origin", "*");
+                res.send(linkToken);
+            }));
             app.use(cors_1.default());
             return app;
         });

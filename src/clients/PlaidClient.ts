@@ -27,7 +27,8 @@ class PlaidClient {
         client_user_id: id,
       },
     };
-    return client.post("/link/token/create", body);
+    const response = await client.post("/link/token/create", body);
+    return response.data.link_token;
   };
 }
 

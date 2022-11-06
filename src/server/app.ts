@@ -1,8 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { ServerInterface } from "./app.interface";
-import baseRouter from "../modules/baseRouter";
-import PlaidClient from "src/clients/PlaidClient";
+import PlaidClient from "../clients/PlaidClient";
 
 class Server implements ServerInterface {
   private plaidClient = new PlaidClient();
@@ -12,11 +11,12 @@ class Server implements ServerInterface {
     const app = express();
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
-    app.use("/api/v1", baseRouter.routes); //setting up base route
     // define a route handler for the default home page
-    app.post("/link-token", (req, res) => {
-      const id = req.body;
-      const linkToken = this.plaidClient.getLinkToken(id);
+    app.get("/link-token", async (req, res) => {
+      // const id = req.body;
+      const linkToken = await this.plaidClient.getLinkToken("id");
+      console.log(linkToken);
+      console.log("hehe");
       res.header("Access-Control-Allow-Origin", "*");
       res.send(linkToken);
     });
